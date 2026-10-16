@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Freelance Ops">
+<meta name="theme-color" content="#047857">
+<title>Ilse Placencia — Freelance Operations</title>
+<style>
+/* ============ Ilse Placencia — Freelance Operations ============
+   Neutral professional theme. Fully offline. No external assets. */
+:root{
+  --bg:#f3f4f6; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+  --line:#e5e7eb; --primary:#111827; --accent:#047857; --accent-soft:#d1fae5;
+  --warn:#d97706; --warn-soft:#fef3c7; --bad:#dc2626; --bad-soft:#fee2e2;
+  --info:#1d4ed8; --info-soft:#dbeafe; --radius:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;
+  max-width:1100px;margin:0 auto;padding:0 12px 90px;-webkit-text-size-adjust:100%}
+h1{font-size:1.15rem} h2{font-size:1.05rem;margin-bottom:10px}
+h3{font-size:.95rem}
+/* header */
+.app-header{background:var(--primary);color:#fff;border-radius:0 0 var(--radius) var(--radius);
+  padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px;border-radius:10px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem}
+.brand p{font-size:.78rem;color:#d1d5db}
+.alert-pill{background:var(--warn-soft);color:#92400e;border-radius:20px;
+  padding:6px 12px;font-size:.8rem;font-weight:600;border:none;cursor:pointer}
+.alert-pill.ok{background:#1f2937;color:#d1d5db}
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 2px;position:sticky;top:66px;
+  background:var(--bg);z-index:40;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;border:1px solid var(--line);background:var(--card);
+  border-radius:20px;padding:8px 14px;font-size:.85rem;cursor:pointer;color:var(--ink)}
+.tab.active{background:var(--primary);color:#fff;border-color:var(--primary);font-weight:600}
+/* cards + grids */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow)}
+.kpi .label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.kpi .value{font-size:1.35rem;font-weight:700;margin-top:2px}
+.kpi .sub{font-size:.75rem;color:var(--muted)}
+.positive{color:var(--accent)} .negative{color:var(--bad)} .warning{color:var(--warn)}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:none}
+.table-wrap{overflow-x:auto}
+/* buttons */
+.btn{display:inline-block;border:none;border-radius:8px;padding:9px 14px;font-size:.85rem;
+  cursor:pointer;background:var(--primary);color:#fff;font-weight:600;min-height:40px}
+.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:#fff;color:var(--bad);border:1px solid var(--bad)}
+.btn.small{padding:5px 10px;min-height:32px;font-size:.78rem}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.badge{display:inline-block;font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:12px;
+  background:#eef2f7;color:var(--ink)}
+.badge.green{background:var(--accent-soft);color:#065f46}
+.badge.amber{background:var(--warn-soft);color:#92400e}
+.badge.red{background:var(--bad-soft);color:#991b1b}
+.badge.blue{background:var(--info-soft);color:#1e40af}
+.badge.soon{background:#f3f4f6;color:var(--muted);border:1px dashed #9ca3af}
+/* pipeline */
+.kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}
+.stage-col{min-width:230px;flex:0 0 230px;background:#eceff3;border-radius:var(--radius);
+  padding:10px;scroll-snap-align:start}
+.stage-col h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);
+  margin-bottom:8px;display:flex;justify-content:space-between}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:8px}
+.pcard .t{font-weight:600;font-size:.88rem}
+.pcard .m{font-size:.75rem;color:var(--muted);margin-top:2px}
+.pcard .mv{display:flex;gap:4px;margin-top:8px}
+.pcard .mv button{flex:1;border:1px solid var(--line);background:#f9fafb;border-radius:6px;
+  padding:6px 0;cursor:pointer;font-size:.8rem;min-height:32px}
+/* forms / modal */
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;
+  display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+  border-radius:16px 16px 0 0;padding:18px}
+@media(min-width:600px){.modal-back{align-items:center}.modal{border-radius:16px}}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);
+  border-radius:8px;padding:10px;font-size:.95rem;font-family:inherit;min-height:42px}
+.field textarea{min-height:70px;resize:vertical}
+/* lists */
+.item-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  padding:10px 0;border-bottom:1px solid var(--line)}
+.item-row:last-child{border-bottom:none}
+.item-row .grow{flex:1;min-width:0}
+.item-actions{display:flex;gap:6px;flex-shrink:0}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;
+  cursor:pointer;font-size:.78rem;min-height:34px}
+.icon-btn:hover{background:#f9fafb}
+/* misc */
+.hint{background:var(--info-soft);border:1px solid #bfdbfe;border-radius:var(--radius);
+  padding:12px;font-size:.85rem;color:#1e3a8a;margin-bottom:12px}
+.empty{color:var(--muted);font-size:.85rem;padding:14px;text-align:center;border:1px dashed var(--line);
+  border-radius:var(--radius);margin:8px 0}
+.section-title{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}
+.section-title h2{margin:0}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:150px;padding:8px 0 0}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0}
+.bar{width:70%;max-width:26px;background:var(--accent);border-radius:4px 4px 0 0;min-height:3px}
+.bar-label{font-size:.6rem;color:var(--muted);margin-top:4px;white-space:nowrap}
+.bar-val{font-size:.62rem;color:var(--ink);font-weight:600}
+.progress{height:10px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin-top:6px}
+.progress > div{height:100%;background:var(--accent)}
+.progress.over > div{background:var(--bad)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--primary);
+  color:#fff;padding:10px 18px;border-radius:10px;font-size:.85rem;z-index:200;display:none}
+.star{color:#f59e0b}
+details{margin-top:8px} summary{cursor:pointer;font-size:.85rem;color:var(--info);font-weight:600}
+.demo-banner{background:#fef9c3;border:1px solid #fde047;color:#713f12;border-radius:var(--radius);
+  padding:10px 14px;font-size:.85rem;font-weight:600;margin-bottom:12px;display:flex;
+  justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.note{font-size:.75rem;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-mark">IP</div>
+    <div><h1>Ilse Placencia</h1><p>Freelance Operations</p></div>
+  </div>
+  <button class="alert-pill ok" id="alertPill" title="Open Deadlines">0 alerts</button>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Modules"></nav>
+
+<main id="view"></main>
+
+<div id="modalRoot"></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ================================================================
+   Ilse Placencia — Freelance Operations
+   Single-file dashboard. Data lives in browser localStorage only.
+   No network calls, no external assets: works fully offline.
+   ================================================================ */
+
+const DB_KEY = "ilse-freelance-ops-v1";
+
+const STAGES = ["lead","bid sent","won","in progress","mockup approved",
+  "built","ilse approved","delivered","paid","reviewed"];
+
+const PLATFORMS = ["Fiverr","Upwork","Freelancer.com","Airtasker",
+  "Twine (coming soon)","Unjumble (coming soon)","Other"];
+
+const COST_CATS = ["Connects","Tools","Subscriptions","Platform fees","Other"];
+const BID_STATUS = ["sent","won","lost","withdrawn"];
+const PAY_STATUS = ["pending","paid"];
+
+/* ---------------- data layer ---------------- */
+function blankState(){
+  return { projects:[], payments:[], costs:[], deadlines:[],
+           clients:[], comms:[], bids:[], reviews:[],
+           settings:{ audPerUsd:1.50, weeklyBidBudget:0, demoLoaded:false } };
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    if(!raw) return blankState();
+    const s = Object.assign(blankState(), JSON.parse(raw));
+    s.settings = Object.assign(blankState().settings, s.settings||{});
+    return s;
+  }catch(e){ return blankState(); }
+}
+let S = load();
+function save(){ localStorage.setItem(DB_KEY, JSON.stringify(S)); }
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = s => String(s==null?"":s)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const money = n => (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-AU",
+  {minimumFractionDigits:2, maximumFractionDigits:2});
+const toAUD = (amt, cur) => (cur==="USD" ? amt * S.settings.audPerUsd : amt);
+const fmtDate = iso => { if(!iso) return "—";
+  const d = new Date(iso+"T00:00:00"); return d.toLocaleDateString("en-AU",
+  {day:"numeric",month:"short",year:"numeric"}); };
+const todayISO = () => { const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const daysUntil = iso => Math.ceil((new Date(iso+"T00:00:00")-new Date(todayISO()+"T00:00:00"))/86400000);
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.display = "block";
+  clearTimeout(t._h); t._h = setTimeout(()=>t.style.display="none", 2200);
+}
+
+/* ---------------- generic modal form ----------------
+   openForm(title, fields, values, onSubmit)
+   field: {key,label,type:'text'|'number'|'date'|'select'|'textarea'|'checkbox',
+           options:[], required, placeholder, step, hint} */
+function openForm(title, fields, values, onSubmit){
+  values = values || {};
+  const root = document.getElementById("modalRoot");
+  const back = document.createElement("div");
+  back.className = "modal-back";
+  const m = document.createElement("div");
+  m.className = "modal";
+  let html = "<h2>"+esc(title)+"</h2><div style='height:10px'></div>";
+  fields.forEach(f=>{
+    const v = values[f.key]!=null ? values[f.key] : (f.def||"");
+    html += "<div class='field'><label>"+esc(f.label)+
+      (f.required?" *":"")+"</label>";
+    if(f.type==="select"){
+      html += "<select name='"+f.key+"'>"+f.options.map(o=>{
+        const val = Array.isArray(o)?o[0]:o, lab = Array.isArray(o)?o[1]:o;
+        return "<option value='"+esc(val)+"'"+(String(val)===String(v)?" selected":"")+">"+
+          esc(lab)+"</option>";}).join("")+"</select>";
+    }else if(f.type==="textarea"){
+      html += "<textarea name='"+f.key+"' placeholder='"+esc(f.placeholder||"")+"'>"+esc(v)+"</textarea>";
+    }else if(f.type==="checkbox"){
+      html += "<input type='checkbox' name='"+f.key+"' style='width:auto;min-height:24px'"+
+        (v?" checked":"")+">";
+    }else{
+      html += "<input type='"+(f.type||"text")+"' name='"+f.key+"' value='"+esc(v)+
+        "' placeholder='"+esc(f.placeholder||"")+"'"+
+        (f.step?" step='"+f.step+"'":"")+(f.required?" required":"")+">";
+    }
+    if(f.hint) html += "<div class='note'>"+esc(f.hint)+"</div>";
+    html += "</div>";
+  });
+  html += "<div class='btn-row'><button class='btn' id='fSave'>Save</button>"+
+    "<button class='btn secondary' id='fCancel'>Cancel</button></div>";
+  m.innerHTML = html; back.appendChild(m); root.appendChild(back);
+  const close = ()=>back.remove();
+  back.addEventListener("click", e=>{ if(e.target===back) close(); });
+  m.querySelector("#fCancel").onclick = close;
+  m.querySelector("#fSave").onclick = ()=>{
+    const out = {};
+    fields.forEach(f=>{
+      const el = m.querySelector("[name='"+f.key+"']");
+      if(f.type==="checkbox") out[f.key] = el.checked;
+      else if(f.type==="number") out[f.key] = el.value===""?null:parseFloat(el.value);
+      else out[f.key] = el.value.trim();
+    });
+    for(const f of fields){
+      if(f.required && (out[f.key]==null || out[f.key]==="")){
+        toast("Please fill in: "+f.label); return;
+      }
+    }
+    close(); onSubmit(out);
+  };
+  const first = m.querySelector("input,select,textarea");
+  if(first) first.focus();
+}
+
+function confirmDelete(label, fn){
+  if(confirm("Delete "+label+"? This cannot be undone.")){ fn(); }
+}
+
+/* ---------------- export / import / demo ---------------- */
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "freelance-ops-backup-"+todayISO()+".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  toast("Backup downloaded");
+}
+function importJSON(file){
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const data = JSON.parse(r.result);
+      if(!data || typeof data!=="object" || !Array.isArray(data.projects))
+        throw new Error("bad file");
+      S = Object.assign(blankState(), data);
+      S.settings = Object.assign(blankState().settings, data.settings||{});
+      save(); render(); toast("Data imported");
+    }catch(e){ toast("That file is not a valid backup"); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------------- shared helpers ---------------- */
+function platformOptions(){ return PLATFORMS.map(p=>[p,p]); }
+function clientOptions(includeNone){
+  const opts = S.clients.map(c=>[c.id,c.name]);
+  if(includeNone) opts.unshift(["","— none —"]);
+  return opts;
+}
+function projectOptions(includeNone){
+  const opts = S.projects.map(p=>[p.id,p.name]);
+  if(includeNone) opts.unshift(["","— none —"]);
+  return opts;
+}
+function clientName(id){ const c=S.clients.find(x=>x.id===id); return c?c.name:"—"; }
+function projectName(id){ const p=S.projects.find(x=>x.id===id); return p?p.name:"—"; }
+function paidRevenue(){ // sum of paid payments in AUD
+  return S.payments.filter(p=>p.status==="paid")
+    .reduce((a,p)=>a+toAUD(p.amount||0,p.currency||"AUD"),0);
+}
+function costsTotal(inclRecurring){
+  let t = 0;
+  S.costs.forEach(c=>{
+    t += toAUD(c.amount||0, c.currency||"AUD");
+  });
+  return t;
+}
+function pendingTotal(){
+  return S.payments.filter(p=>p.status==="pending")
+    .reduce((a,p)=>a+toAUD(p.amount||0,p.currency||"AUD"),0);
+}
+function revenueByMonth(){
+  const map = {};
+  S.payments.filter(p=>p.status==="paid").forEach(p=>{
+    const m = (p.date||todayISO()).slice(0,7);
+    map[m] = (map[m]||0) + toAUD(p.amount||0, p.currency||"AUD");
+  });
+  return map;
+}
+function activeDeadlines(){
+  return S.deadlines.filter(d=>!d.done)
+    .sort((a,b)=>a.dueDate<b.dueDate?-1:1);
+}
+function alertCount(){
+  return activeDeadlines().filter(d=>daysUntil(d.dueDate)<=(d.alertDays||3)).length;
+}
+function avgResponseMins(clientId){
+  const log = S.comms.filter(c=>c.clientId===clientId)
+    .sort((a,b)=>a.date<b.date?-1:1);
+  const diffs = [];
+  for(let i=0;i<log.length;i++){
+    if(log[i].dir==="out"){
+      for(let j=i-1;j>=0;j--){
+        if(log[j].dir==="in"){
+          if(log[i].responseMins!=null) diffs.push(log[i].responseMins);
+          else {
+            const mins = Math.round((new Date(log[i].date+"T12:00")-
+              new Date(log[j].date+"T12:00"))/60000);
+            if(mins>=0 && mins<60*24*7) diffs.push(mins);
+          }
+          break;
+        }
+      }
+    }
+  }
+  if(!diffs.length) return null;
+  return Math.round(diffs.reduce((a,b)=>a+b,0)/diffs.length);
+}
+const fmtResp = mins => mins==null ? "—" :
+  mins<60 ? mins+" min" : (mins/60).toFixed(mins%60?1:0)+" h";
+
+/* ---------------- navigation ---------------- */
+const TABS = [
+  ["dash","Dashboard"],["money","Money"],["pipeline","Pipeline"],
+  ["deadlines","Deadlines"],["clients","Clients"],["bids","Bids"],
+  ["rep","Reputation"],["settings","Settings"]
+];
+let currentTab = "dash";
+function nav(){
+  const el = document.getElementById("tabs");
+  el.innerHTML = TABS.map(([k,lab])=>
+    "<button class='tab"+(k===currentTab?" active":"")+"' data-t='"+k+"'>"+lab+"</button>").join("");
+  el.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{currentTab=b.dataset.t;render();});
+}
+function updatePill(){
+  const n = alertCount();
+  const pill = document.getElementById("alertPill");
+  pill.textContent = n===0 ? "0 alerts" : n+" alert"+(n>1?"s":"");
+  pill.className = "alert-pill"+(n===0?" ok":"");
+  pill.onclick = ()=>{ currentTab="deadlines"; render(); window.scrollTo(0,0); };
+}
+
+/* ---------------- Dashboard ---------------- */
+function viewDash(){
+  const rev = paidRevenue(), costs = costsTotal(), pend = pendingTotal();
+  const openBids = S.bids.filter(b=>b.status==="sent").length;
+  const won = S.bids.filter(b=>b.status==="won").length;
+  const decided = S.bids.filter(b=>b.status==="won"||b.status==="lost").length;
+  const winRate = decided? Math.round(won/decided*100):0;
+  const active = S.projects.filter(p=>!["paid","reviewed"].includes(p.stage)).length;
+  const soon = activeDeadlines().filter(d=>daysUntil(d.dueDate)<=(d.alertDays||3));
+  const nRev = S.reviews.length;
+  const avgR = nRev? (S.reviews.reduce((a,r)=>a+r.rating,0)/nRev).toFixed(1):"—";
+  let alerts = "";
+  soon.forEach(d=>{
+    const du = daysUntil(d.dueDate);
+    const lab = du<0 ? "OVERDUE by "+Math.abs(du)+"d" : du===0 ? "Due today" : "Due in "+du+"d";
+    alerts += "<div class='item-row'><div class='grow'><b>"+esc(d.title)+"</b><br>"+
+      "<span class='note'>"+esc(projectName(d.projectId))+" · "+fmtDate(d.dueDate)+"</span></div>"+
+      "<span class='badge "+(du<0?"red":"amber")+"'>"+lab+"</span></div>";
+  });
+  if(!soon.length) alerts = "<div class='empty'>No deadlines due soon. Nice.</div>";
+  const demo = S.settings.demoLoaded ?
+    "<div class='demo-banner'><span>DEMO DATA is loaded (all entries are fake)</span>"+
+    "<button class='btn small secondary' onclick='clearAll()'>Clear all data</button></div>" : "";
+  return demo+
+  (S.projects.length===0 && !S.settings.demoLoaded ?
+    "<div class='hint'><b>Welcome.</b> This app starts empty — nothing is invented here. "+
+    "Add your first client, project or bid to begin. Use Settings to load clearly-labeled demo data for a preview.</div>" : "")+
+  "<div class='kpis'>"+
+    kpi("Revenue (all time)", money(rev), "paid, in AUD")+
+    kpi("Profit", money(rev-costs), "", rev-costs<0?"negative":"positive")+
+    kpi("Pending payments", money(pend), S.payments.filter(p=>p.status==="pending").length+" open")+
+    kpi("Active projects", active, "not yet paid/reviewed")+
+    kpi("Open bids", openBids, "win rate "+winRate+"%")+
+    kpi("Avg rating", avgR+(nRev?" ★":""), nRev+" reviews")+
+  "</div>"+
+  "<div class='card'><h2>Alerts — deadlines due soon</h2>"+alerts+"</div>"+
+  "<div class='card'><h2>Quick add</h2><div class='btn-row'>"+
+    "<button class='btn small' onclick='addClient()'>+ Client</button>"+
+    "<button class='btn small' onclick='addProject()'>+ Project</button>"+
+    "<button class='btn small' onclick='addBid()'>+ Bid</button>"+
+    "<button class='btn small' onclick='addDeadline()'>+ Deadline</button>"+
+    "<button class='btn small' onclick='addPayment()'>+ Payment</button>"+
+    "<button class='btn small' onclick='addCost()'>+ Cost</button>"+
+  "</div></div>";
+}
+function kpi(label, value, sub, cls){
+  return "<div class='kpi'><div class='label'>"+label+"</div>"+
+    "<div class='value "+(cls||"")+"'>"+value+"</div>"+
+    (sub?"<div class='sub'>"+sub+"</div>":"")+"</div>";
+}
+
+/* ---------------- Money ---------------- */
+function fyList(){
+  const now = new Date(), y = now.getFullYear(), m = now.getMonth(); // month 0-based
+  const curFY = m>=6 ? y : y-1; // FY starts July
+  const list = [];
+  for(let f=curFY+1; f>=curFY-3; f--) list.push(f);
+  return list;
+}
+function inFY(iso, fy){
+  if(!iso) return false;
+  const d = iso.slice(0,10);
+  return d >= fy+"-07-01" && d < (fy+1)+"-07-01";
+}
+let moneyFY = null;
+function viewMoney(){
+  if(moneyFY===null){ const now=new Date();
+    moneyFY = now.getMonth()>=6 ? now.getFullYear() : now.getFullYear()-1; }
+  const fy = moneyFY;
+  const paid = S.payments.filter(p=>p.status==="paid"&&inFY(p.date,fy));
+  const pend = S.payments.filter(p=>p.status==="pending");
+  const rev = paid.reduce((a,p)=>a+toAUD(p.amount||0,p.currency||"AUD"),0);
+  const costs = S.costs.filter(c=>inFY(c.date,fy))
+    .reduce((a,c)=>a+toAUD(c.amount||0,c.currency||"AUD"),0);
+  const pendT = pend.reduce((a,p)=>a+toAUD(p.amount||0,p.currency||"AUD"),0);
+  const fees = S.costs.filter(c=>c.category==="Platform fees"&&inFY(c.date,fy))
+    .reduce((a,c)=>a+toAUD(c.amount||0,c.currency||"AUD"),0);
+  const profit = rev-costs;
+  // per project
+  const perProj = {};
+  S.payments.forEach(p=>{
+    if(p.projectId && inFY(p.date,fy)){
+      const k = p.projectId;
+      perProj[k] = perProj[k]||{paid:0,pend:0};
+      if(p.status==="paid") perProj[k].paid += toAUD(p.amount||0,p.currency||"AUD");
+      else perProj[k].pend += toAUD(p.amount||0,p.currency||"AUD");
+    }
+  });
+  // per platform
+  const perPlat = {};
+  S.payments.forEach(p=>{
+    if(!inFY(p.date,fy)) return;
+    const pr = S.projects.find(x=>x.id===p.projectId);
+    const plat = pr?pr.platform:"Other";
+    perPlat[plat] = perPlat[plat]||{paid:0,pend:0};
+    if(p.status==="paid") perPlat[plat].paid += toAUD(p.amount||0,p.currency||"AUD");
+    else perPlat[plat].pend += toAUD(p.amount||0,p.currency||"AUD");
+  });
+  // effective rate
+  const hours = S.projects.reduce((a,p)=>a+(p.hoursWorked||0),0);
+  const effRate = hours>0 ? rev/hours : null;
+  let h = "<div class='section-title'><h2>Money in</h2>"+
+    "<select id='fySel' class='icon-btn' onchange='moneyFY=parseInt(this.value);render()'>"+
+    fyList().map(f=>"<option value='"+f+"'"+(f===fy?" selected":"")+">FY "+f+"–"+String(f+1).slice(2)+"</option>").join("")+
+    "</select></div>";
+  h += "<div class='note' style='margin-bottom:10px'>Australian financial year: 1 Jul – 30 Jun. "+
+    "Totals shown in AUD (USD converted at "+S.settings.audPerUsd.toFixed(2)+
+    ", editable in Settings).</div>";
+  h += "<div class='kpis'>"+
+    kpi("Revenue FY", money(rev), paid.length+" paid payments")+
+    kpi("Costs FY", money(costs), "incl. platform fees "+money(fees))+
+    kpi("Profit FY", money(profit), "", profit<0?"negative":"positive")+
+    kpi("Pending", money(pendT), pend.length+" open payments")+
+  "</div>";
+  if(effRate!=null) h += "<div class='card'><b>Effective rate:</b> "+money(effRate)+
+    "/hr across "+hours.toFixed(1)+" logged hours <span class='note'>(revenue FY ÷ hours on projects)</span></div>";
+
+  // monthly chart (last 12 months)
+  const byM = revenueByMonth();
+  const months = [];
+  const nowD = new Date();
+  for(let i=11;i>=0;i--){
+    const d = new Date(nowD.getFullYear(), nowD.getMonth()-i, 1);
+    months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"));
+  }
+  const max = Math.max(1,...months.map(mk=>byM[mk]||0));
+  const lab = mk => { const [y,mm]=mk.split("-");
+    return ["J","F","M","A","M","J","J","A","S","O","N","D"][parseInt(mm)-1]; };
+  h += "<div class='card'><h2>Revenue per month (paid, AUD)</h2><div class='bar-chart'>"+
+    months.map(mk=>{ const v=byM[mk]||0;
+      return "<div class='bar-col'><div class='bar-val'>"+(v>0?Math.round(v):"")+"</div>"+
+      "<div class='bar' style='height:"+Math.max(3,Math.round(v/max*110))+"px'></div>"+
+      "<div class='bar-label'>"+lab(mk)+"</div></div>"; }).join("")+
+    "</div></div>";
+
+  // per platform
+  h += "<div class='card'><h2>Revenue per platform (FY)</h2>";
+  const pk = Object.keys(perPlat);
+  if(!pk.length) h += "<div class='empty'>No payments in this financial year yet.</div>";
+  else { h += "<div class='table-wrap'><table><tr><th>Platform</th><th>Paid</th><th>Pending</th></tr>"+
+    pk.map(p=>"<tr><td>"+esc(p)+"</td><td>"+money(perPlat[p].paid)+
+      "</td><td>"+money(perPlat[p].pend)+"</td></tr>").join("")+"</table></div>"; }
+  h += "</div>";
+
+  // per project
+  h += "<div class='card'><div class='section-title' style='margin:0 0 8px'><h2>Revenue per project</h2>"+
+    "<button class='btn small' onclick='addPayment()'>+ Payment</button></div>";
+  const prk = Object.keys(perProj);
+  if(!prk.length) h += "<div class='empty'>No payments recorded yet.</div>";
+  else { h += "<div class='table-wrap'><table><tr><th>Project</th><th>Paid</th><th>Pending</th></tr>"+
+    prk.map(id=>"<tr><td>"+esc(projectName(id))+"</td><td>"+money(perProj[id].paid)+
+      "</td><td>"+money(perProj[id].pend)+"</td></tr>").join("")+"</table></div>"; }
+  h += "</div>";
+
+  // payments list
+  h += "<div class='card'><div class='section-title' style='margin:0 0 8px'><h2>Payments (pending + milestones)</h2>"+
+    "<button class='btn small' onclick='addPayment()'>+ Payment</button></div>";
+  if(!S.payments.length) h += "<div class='empty'>No payments yet.</div>";
+  else {
+    const sorted=[...S.payments].sort((a,b)=>(a.date||"")<(b.date||"")?-1:1);
+    sorted.forEach(p=>{
+      h += "<div class='item-row'><div class='grow'><b>"+esc(p.label)+"</b> "+
+        "<span class='badge "+(p.status==="paid"?"green":"amber")+"'>"+p.status+"</span><br>"+
+        "<span class='note'>"+esc(projectName(p.projectId))+" · "+money(toAUD(p.amount||0,p.currency||"AUD"))+
+        " AUD ("+(p.currency||"AUD")+" "+(p.amount||0)+") · "+fmtDate(p.date)+"</span></div>"+
+        "<div class='item-actions'>"+
+        (p.status==="pending"?"<button class='icon-btn' onclick='markPaid(\""+p.id+"\")'>Mark paid</button>":"")+
+        "<button class='icon-btn' onclick='editPayment(\""+p.id+"\")'>Edit</button>"+
+        "<button class='icon-btn' onclick='delPayment(\""+p.id+"\")'>✕</button></div></div>";
+    });
+  }
+  h += "</div>";
+
+  // costs
+  h += "<div class='card'><div class='section-title' style='margin:0 0 8px'><h2>Costs (FY "+fy+")</h2>"+
+    "<button class='btn small' onclick='addCost()'>+ Cost</button></div>";
+  const fcosts = S.costs.filter(c=>inFY(c.date,fy)).sort((a,b)=>(a.date||"")<(b.date||"")?-1:1);
+  if(!fcosts.length) h += "<div class='empty'>No costs recorded. Log Connects, tools and subscriptions here.</div>";
+  else { h += "<div class='table-wrap'><table><tr><th>Item</th><th>Category</th><th>Amount (AUD)</th><th>Date</th><th></th></tr>"+
+    fcosts.map(c=>"<tr><td>"+esc(c.name)+(c.recurring?" <span class='badge blue'>recurring</span>":"")+"</td>"+
+      "<td>"+esc(c.category)+"</td><td>"+money(toAUD(c.amount||0,c.currency||"AUD"))+"</td>"+
+      "<td>"+fmtDate(c.date)+"</td>"+
+      "<td><button class='icon-btn' onclick='editCost(\""+c.id+"\")'>Edit</button> "+
+      "<button class='icon-btn' onclick='delCost(\""+c.id+"\")'>✕</button></td></tr>").join("")+
+    "</table></div><div class='note'>Recurring items: re-add each month so the tax record stays clean.</div>"; }
+  h += "</div>";
+  return h;
+}
+/* ---------------- CRUD: payments & costs ---------------- */
+function addPayment(v){
+  openForm(v?"Edit payment":"Add payment",[
+    {key:"label",label:"Label (e.g. Milestone 1 — chatbot build)",required:true},
+    {key:"projectId",label:"Project",type:"select",options:projectOptions(true)},
+    {key:"amount",label:"Amount",type:"number",step:"0.01",required:true},
+    {key:"currency",label:"Currency",type:"select",options:["AUD","USD"]},
+    {key:"status",label:"Status",type:"select",options:PAY_STATUS},
+    {key:"date",label:"Date (paid or due)",type:"date",def:todayISO()}
+  ], v, d=>{
+    if(v) Object.assign(S.payments.find(x=>x.id===v.id), d);
+    else S.payments.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editPayment(id){ addPayment(S.payments.find(x=>x.id===id)); }
+function delPayment(id){ const p=S.payments.find(x=>x.id===id);
+  confirmDelete("payment \""+p.label+"\"", ()=>{ S.payments=S.payments.filter(x=>x.id!==id); save(); render(); }); }
+function markPaid(id){ const p=S.payments.find(x=>x.id===id);
+  p.status="paid"; if(!p.date) p.date=todayISO(); save(); render(); toast("Marked paid"); }
+
+function addCost(v){
+  openForm(v?"Edit cost":"Add cost",[
+    {key:"name",label:"Item (e.g. Upwork Connects, n8n hosting)",required:true},
+    {key:"category",label:"Category",type:"select",options:COST_CATS},
+    {key:"amount",label:"Amount",type:"number",step:"0.01",required:true},
+    {key:"currency",label:"Currency",type:"select",options:["AUD","USD"]},
+    {key:"date",label:"Date",type:"date",def:todayISO()},
+    {key:"recurring",label:"Recurring (monthly)",type:"checkbox",
+      hint:"Tick for subscriptions. Re-add each month to keep the tax record clean."}
+  ], v, d=>{
+    if(v) Object.assign(S.costs.find(x=>x.id===v.id), d);
+    else S.costs.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editCost(id){ addCost(S.costs.find(x=>x.id===id)); }
+function delCost(id){ const c=S.costs.find(x=>x.id===id);
+  confirmDelete("cost \""+c.name+"\"", ()=>{ S.costs=S.costs.filter(x=>x.id!==id); save(); render(); }); }
+
+/* ---------------- CRUD: clients & projects ---------------- */
+function addClient(v){
+  openForm(v?"Edit client":"Add client",[
+    {key:"name",label:"Client name",required:true},
+    {key:"platform",label:"Platform",type:"select",options:platformOptions()},
+    {key:"notes",label:"Notes",type:"textarea",placeholder:"How you found them, what they need…"}
+  ], v, d=>{
+    if(v) Object.assign(S.clients.find(x=>x.id===v.id), d);
+    else S.clients.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editClient(id){ addClient(S.clients.find(x=>x.id===id)); }
+function delClient(id){ const c=S.clients.find(x=>x.id===id);
+  confirmDelete("client \""+c.name+"\" and their message log", ()=>{
+    S.clients=S.clients.filter(x=>x.id!==id);
+    S.comms=S.comms.filter(x=>x.clientId!==id);
+    save(); render(); }); }
+
+function addProject(v){
+  openForm(v?"Edit project":"Add project",[
+    {key:"name",label:"Project name",required:true},
+    {key:"clientId",label:"Client",type:"select",options:clientOptions(true)},
+    {key:"platform",label:"Platform",type:"select",options:platformOptions()},
+    {key:"stage",label:"Pipeline stage",type:"select",options:STAGES},
+    {key:"value",label:"Agreed value",type:"number",step:"0.01"},
+    {key:"currency",label:"Currency",type:"select",options:["AUD","USD"]},
+    {key:"hoursWorked",label:"Hours worked (optional)",type:"number",step:"0.5",
+      hint:"Feeds the effective hourly rate in Money."},
+    {key:"notes",label:"Notes",type:"textarea"}
+  ], v, d=>{
+    if(v) Object.assign(S.projects.find(x=>x.id===v.id), d);
+    else S.projects.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editProject(id){ addProject(S.projects.find(x=>x.id===id)); }
+function delProject(id){ const p=S.projects.find(x=>x.id===id);
+  confirmDelete("project \""+p.name+"\"", ()=>{ S.projects=S.projects.filter(x=>x.id!==id);
+    S.payments=S.payments.filter(x=>x.projectId!==id);
+    S.deadlines=S.deadlines.filter(x=>x.projectId!==id);
+    save(); render(); }); }
+function moveProject(id, dir){
+  const p = S.projects.find(x=>x.id===id);
+  const i = STAGES.indexOf(p.stage);
+  const ni = i+dir;
+  if(ni<0||ni>=STAGES.length) return;
+  p.stage = STAGES[ni]; save(); render();
+}
+
+/* ---------------- CRUD: deadlines ---------------- */
+function addDeadline(v){
+  openForm(v?"Edit deadline":"Add deadline",[
+    {key:"title",label:"Deadline",required:true,placeholder:"e.g. Deliver chatbot mockup"},
+    {key:"projectId",label:"Linked project",type:"select",options:projectOptions(true)},
+    {key:"dueDate",label:"Due date",type:"date",required:true,def:todayISO()},
+    {key:"alertDays",label:"Alert me this many days before",type:"number",def:3}
+  ], v, d=>{
+    if(v) Object.assign(S.deadlines.find(x=>x.id===v.id), d);
+    else S.deadlines.push(Object.assign({id:uid(),done:false}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editDeadline(id){ addDeadline(S.deadlines.find(x=>x.id===id)); }
+function delDeadline(id){ confirmDelete("this deadline", ()=>{
+  S.deadlines=S.deadlines.filter(x=>x.id!==id); save(); render(); }); }
+function toggleDeadline(id){ const d=S.deadlines.find(x=>x.id===id);
+  d.done=!d.done; save(); render(); }
+let showDone = false;
+
+/* ---------------- Pipeline view ---------------- */
+function viewPipeline(){
+  let h = "<div class='section-title'><h2>Pipeline</h2>"+
+    "<button class='btn small' onclick='addProject()'>+ Project</button></div>";
+  h += "<div class='note' style='margin-bottom:10px'>Tap a card to edit. Use ‹ › to move a project along the stages.</div>";
+  if(!S.projects.length) return h+"<div class='empty'>No projects yet. Add your first lead.</div>";
+  h += "<div class='kanban'>";
+  STAGES.forEach(st=>{
+    const cards = S.projects.filter(p=>p.stage===st);
+    h += "<div class='stage-col'><h3><span>"+esc(st)+"</span><span>"+cards.length+"</span></h3>";
+    cards.forEach(p=>{
+      const val = p.value? money(toAUD(p.value,p.currency||"AUD"))+" AUD":"";
+      h += "<div class='pcard' onclick='editProject(\""+p.id+"\")'>"+
+        "<div class='t'>"+esc(p.name)+"</div>"+
+        "<div class='m'>"+esc(clientName(p.clientId))+" · "+esc(p.platform)+(val?" · "+val:"")+"</div>"+
+        "<div class='mv' onclick='event.stopPropagation()'>"+
+        "<button onclick='moveProject(\""+p.id+"\",-1)' title='Move back'>‹</button>"+
+        "<button onclick='moveProject(\""+p.id+"\",1)' title='Move forward'>›</button></div></div>";
+    });
+    h += "</div>";
+  });
+  return h+"</div>";
+}
+
+/* ---------------- Deadlines view ---------------- */
+function viewDeadlines(){
+  let h = "<div class='section-title'><h2>Deadlines</h2>"+
+    "<div><button class='btn small secondary' onclick='showDone=!showDone;render()'>"+
+    (showDone?"Hide done":"Show done")+"</button> "+
+    "<button class='btn small' onclick='addDeadline()'>+ Deadline</button></div></div>";
+  const list = activeDeadlines().filter(d=>showDone||!d.done);
+  const doneList = S.deadlines.filter(d=>d.done)
+    .sort((a,b)=>a.dueDate<b.dueDate?-1:1);
+  if(!list.length && !showDone) return h+"<div class='empty'>No active deadlines.</div>";
+  list.forEach(d=>{
+    const du = daysUntil(d.dueDate);
+    const lab = du<0 ? "OVERDUE "+Math.abs(du)+"d" : du===0 ? "Due today" : "In "+du+"d";
+    const cls = du<0 ? "red" : du<=(d.alertDays||3) ? "amber" : "green";
+    h += "<div class='item-row'><div class='grow'><b>"+esc(d.title)+"</b><br>"+
+      "<span class='note'>"+esc(projectName(d.projectId))+" · due "+fmtDate(d.dueDate)+
+      " · alert "+(d.alertDays||3)+"d before</span></div>"+
+      "<div class='item-actions' style='align-items:center'>"+
+      "<span class='badge "+cls+"'>"+lab+"</span>"+
+      "<button class='icon-btn' onclick='toggleDeadline(\""+d.id+"\")'>Done</button>"+
+      "<button class='icon-btn' onclick='editDeadline(\""+d.id+"\")'>Edit</button>"+
+      "<button class='icon-btn' onclick='delDeadline(\""+d.id+"\")'>✕</button></div></div>";
+  });
+  if(showDone && doneList.length){
+    h += "<h3 style='margin-top:14px'>Completed</h3>";
+    doneList.forEach(d=>{
+      h += "<div class='item-row'><div class='grow'><b>"+esc(d.title)+"</b><br>"+
+        "<span class='note'>"+fmtDate(d.dueDate)+"</span></div>"+
+        "<div class='item-actions'><button class='icon-btn' onclick='toggleDeadline(\""+d.id+
+        "\")'>Reopen</button><button class='icon-btn' onclick='delDeadline(\""+d.id+"\")'>✕</button></div></div>";
+    });
+  }
+  return h;
+}
+
+/* ---------------- CRUD: comms ---------------- */
+function addComm(clientId, v){
+  openForm(v?"Edit message":"Log message",[
+    {key:"dir",label:"Direction",type:"select",
+      options:[["in","From client (they wrote)"],["out","To client (you replied)"]]},
+    {key:"date",label:"Date",type:"date",def:todayISO(),required:true},
+    {key:"platform",label:"Platform",type:"select",options:platformOptions()},
+    {key:"summary",label:"Summary",type:"textarea",required:true,
+      placeholder:"Short summary — never paste passwords or secrets."},
+    {key:"responseMins",label:"Your reply time (minutes, optional)",type:"number",
+      hint:"Only for your replies. Leave blank and the app estimates from the message before it."}
+  ], Object.assign({clientId:clientId}, v), d=>{
+    if(v) Object.assign(S.comms.find(x=>x.id===v.id), d);
+    else S.comms.push(Object.assign({id:uid(),clientId:clientId}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editComm(id){ const c=S.comms.find(x=>x.id===id); addComm(c.clientId, c); }
+function delComm(id){ confirmDelete("this message", ()=>{
+  S.comms=S.comms.filter(x=>x.id!==id); save(); render(); }); }
+
+/* ---------------- Clients view ---------------- */
+function viewClients(){
+  let h = "<div class='section-title'><h2>Clients &amp; comms</h2>"+
+    "<button class='btn small' onclick='addClient()'>+ Client</button></div>";
+  h += "<div class='note' style='margin-bottom:10px'>Platforms punish slow replies. Log every exchange; "+
+    "the app tracks your average response time per client.</div>";
+  if(!S.clients.length) return h+"<div class='empty'>No clients yet.</div>";
+  S.clients.forEach(c=>{
+    const log = S.comms.filter(x=>x.clientId===c.id)
+      .sort((a,b)=>(a.date||"")>(b.date||"")?-1:1);
+    const avg = avgResponseMins(c.id);
+    h += "<div class='card'><div class='section-title' style='margin:0 0 6px'><h2>"+esc(c.name)+"</h2>"+
+      "<div class='item-actions'><button class='icon-btn' onclick='addComm(\""+c.id+"\")'>+ Log</button>"+
+      "<button class='icon-btn' onclick='editClient(\""+c.id+"\")'>Edit</button>"+
+      "<button class='icon-btn' onclick='delClient(\""+c.id+"\")'>✕</button></div></div>"+
+      "<div class='m' style='font-size:.8rem;color:var(--muted)'>"+esc(c.platform)+
+      " · avg response: <b>"+fmtResp(avg)+"</b> · "+log.length+" messages"+
+      (c.notes?"<br>"+esc(c.notes):"")+"</div>";
+    if(log.length){
+      h += "<details><summary>Message log ("+log.length+")</summary>";
+      log.slice(0,30).forEach(m=>{
+        h += "<div class='item-row'><div class='grow'>"+
+          "<span class='badge "+(m.dir==="in"?"blue":"green")+"'>"+(m.dir==="in"?"client":"you")+"</span> "+
+          "<span class='note'>"+fmtDate(m.date)+" · "+esc(m.platform)+
+          (m.dir==="out"&&m.responseMins!=null?" · replied in "+m.responseMins+" min":"")+"</span><br>"+
+          esc(m.summary)+"</div>"+
+          "<div class='item-actions'><button class='icon-btn' onclick='editComm(\""+m.id+"\")'>Edit</button>"+
+          "<button class='icon-btn' onclick='delComm(\""+m.id+"\")'>✕</button></div></div>";
+      });
+      if(log.length>30) h += "<div class='note'>Showing the 30 most recent.</div>";
+      h += "</details>";
+    }
+    h += "</div>";
+  });
+  return h;
+}
+
+/* ---------------- CRUD: bids ---------------- */
+function addBid(v){
+  openForm(v?"Edit bid":"Log bid",[
+    {key:"title",label:"Bid / job title",required:true},
+    {key:"clientId",label:"Client (if known)",type:"select",options:clientOptions(true)},
+    {key:"platform",label:"Platform",type:"select",options:platformOptions()},
+    {key:"date",label:"Date sent",type:"date",def:todayISO(),required:true},
+    {key:"bidAmount",label:"Bid amount",type:"number",step:"0.01"},
+    {key:"currency",label:"Currency",type:"select",options:["AUD","USD"]},
+    {key:"connectsUsed",label:"Connects used (Upwork)",type:"number",
+      hint:"Bidding costs real money. Log every Connect."},
+    {key:"connectsCost",label:"Cost of those Connects (AUD)",type:"number",step:"0.01"},
+    {key:"status",label:"Status",type:"select",options:BID_STATUS},
+    {key:"notes",label:"Notes",type:"textarea",placeholder:"Why this bid fits, follow-up plan…"}
+  ], v, d=>{
+    if(v) Object.assign(S.bids.find(x=>x.id===v.id), d);
+    else S.bids.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editBid(id){ addBid(S.bids.find(x=>x.id===id)); }
+function delBid(id){ const b=S.bids.find(x=>x.id===id);
+  confirmDelete("bid \""+b.title+"\"", ()=>{ S.bids=S.bids.filter(x=>x.id!==id); save(); render(); }); }
+function setBidStatus(id, st){ const b=S.bids.find(x=>x.id===id);
+  b.status=st; save(); render(); toast("Bid marked "+st); }
+
+/* ---------------- Bids view ---------------- */
+function weekStart(){ const d=new Date(); d.setHours(0,0,0,0);
+  const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day); // Monday
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function viewBids(){
+  const sent=S.bids.length, won=S.bids.filter(b=>b.status==="won").length;
+  const decided=S.bids.filter(b=>b.status==="won"||b.status==="lost").length;
+  const winRate=decided?Math.round(won/decided*100):0;
+  const totalCost=S.bids.reduce((a,b)=>a+(b.connectsCost||0),0);
+  const avgCost=sent?totalCost/sent:0;
+  const ws=weekStart();
+  const weekCost=S.bids.filter(b=>(b.date||"")>=ws).reduce((a,b)=>a+(b.connectsCost||0),0);
+  const budget=S.settings.weeklyBidBudget||0;
+  let h="<div class='section-title'><h2>Bids</h2>"+
+    "<button class='btn small' onclick='addBid()'>+ Log bid</button></div>";
+  h+="<div class='note' style='margin-bottom:10px'>Upwork Connects cost real money. "+
+    "Set your weekly bid budget in Settings; the app warns when you go over.</div>";
+  h+="<div class='kpis'>"+
+    kpi("Bids sent", sent, "all time")+
+    kpi("Win rate", winRate+"%", won+" won / "+decided+" decided")+
+    kpi("Cost per bid", money(avgCost), "avg Connects cost")+
+    kpi("This week", money(weekCost), budget>0?"budget "+money(budget):"no budget set")+
+  "</div>";
+  if(budget>0){
+    const pct=Math.min(100,Math.round(weekCost/budget*100));
+    h+="<div class='card'><b>Weekly bid spend</b> — "+money(weekCost)+" of "+money(budget)+
+      "<div class='progress"+(weekCost>budget?" over":"")+"'><div style='width:"+pct+"%'></div></div>"+
+      (weekCost>budget?"<div class='note negative' style='color:var(--bad)'>Over budget. No more paid bids this week.</div>":"")+
+      "</div>";
+  }
+  if(!S.bids.length) return h+"<div class='empty'>No bids logged yet.</div>";
+  h+="<div class='card'>";
+  [...S.bids].sort((a,b)=>(a.date||"")<(b.date||"")?-1:1).forEach(b=>{
+    const cls=b.status==="won"?"green":b.status==="lost"?"red":b.status==="withdrawn"?"":"amber";
+    h+="<div class='item-row'><div class='grow'><b>"+esc(b.title)+"</b> "+
+      "<span class='badge "+cls+"'>"+b.status+"</span><br>"+
+      "<span class='note'>"+esc(b.platform)+" · "+fmtDate(b.date)+
+      (b.bidAmount?" · bid "+(b.currency||"AUD")+" "+b.bidAmount:"")+
+      (b.connectsUsed?" · "+b.connectsUsed+" Connects ("+money(b.connectsCost||0)+")":"")+
+      (b.clientId?" · "+esc(clientName(b.clientId)):"")+
+      (b.notes?"<br>"+esc(b.notes):"")+"</span></div>"+
+      "<div class='item-actions'>"+
+      (b.status==="sent"?"<button class='icon-btn' onclick='setBidStatus(\""+b.id+"\",\"won\")'>Won</button>"+
+        "<button class='icon-btn' onclick='setBidStatus(\""+b.id+"\",\"lost\")'>Lost</button>":"")+
+      "<button class='icon-btn' onclick='editBid(\""+b.id+"\")'>Edit</button>"+
+      "<button class='icon-btn' onclick='delBid(\""+b.id+"\")'>✕</button></div></div>";
+  });
+  return h+"</div>";
+}
+
+/* ---------------- CRUD: reviews ---------------- */
+function addReview(v){
+  openForm(v?"Edit review":"Add review",[
+    {key:"platform",label:"Platform",type:"select",options:platformOptions()},
+    {key:"clientId",label:"Client",type:"select",options:clientOptions(true)},
+    {key:"date",label:"Date",type:"date",def:todayISO()},
+    {key:"rating",label:"Rating (1–5)",type:"number",required:true,
+      hint:"Whole or half stars, e.g. 4.5"},
+    {key:"text",label:"Review text",type:"textarea",
+      placeholder:"Paste the client's actual words. Never invent a review."}
+  ], v, d=>{
+    d.rating=Math.max(1,Math.min(5,parseFloat(d.rating)||0));
+    if(v) Object.assign(S.reviews.find(x=>x.id===v.id), d);
+    else S.reviews.push(Object.assign({id:uid()}, d));
+    save(); render(); toast("Saved");
+  });
+}
+function editReview(id){ addReview(S.reviews.find(x=>x.id===id)); }
+function delReview(id){ confirmDelete("this review", ()=>{
+  S.reviews=S.reviews.filter(x=>x.id!==id); save(); render(); }); }
+
+/* ---------------- Reputation view ---------------- */
+function viewRep(){
+  const n=S.reviews.length;
+  const avg=n?(S.reviews.reduce((a,r)=>a+r.rating,0)/n):0;
+  let h="<div class='section-title'><h2>Reputation</h2>"+
+    "<button class='btn small' onclick='addReview()'>+ Add review</button></div>";
+  h+="<div class='note' style='margin-bottom:10px'>Only real reviews from real clients. "+
+    "Never invent a rating or testimonial.</div>";
+  h+="<div class='kpis'>"+
+    kpi("Reviews", n, "all time")+
+    kpi("Average rating", n?avg.toFixed(1)+" ★":"—", n?n+" reviews":"no reviews yet")+
+  "</div>";
+  // per platform
+  const per={};
+  S.reviews.forEach(r=>{ per[r.platform]=per[r.platform]||{n:0,sum:0};
+    per[r.platform].n++; per[r.platform].sum+=r.rating; });
+  h+="<div class='card'><h2>Per platform</h2>";
+  const pk=Object.keys(per);
+  if(!pk.length) h+="<div class='empty'>No reviews yet.</div>";
+  else { h+="<div class='table-wrap'><table><tr><th>Platform</th><th>Reviews</th><th>Avg rating</th></tr>"+
+    pk.map(p=>"<tr><td>"+esc(p)+"</td><td>"+per[p].n+"</td><td>"+
+      "<span class='star'>★</span> "+(per[p].sum/per[p].n).toFixed(1)+"</td></tr>").join("")+
+    "</table></div>"; }
+  h+="</div>";
+  if(S.reviews.length){
+    h+="<div class='card'><h2>All reviews</h2>";
+    [...S.reviews].sort((a,b)=>(a.date||"")<(b.date||"")?-1:1).forEach(r=>{
+      h+="<div class='item-row'><div class='grow'><span class='star'>"+"★".repeat(Math.round(r.rating))+"</span> "+
+        "<b>"+r.rating.toFixed(1)+"</b> · "+esc(r.platform)+" · "+fmtDate(r.date)+"<br>"+
+        "<span class='note'>"+esc(clientName(r.clientId))+"</span>"+
+        (r.text?"<br>"+esc(r.text):"")+"</div>"+
+        "<div class='item-actions'><button class='icon-btn' onclick='editReview(\""+r.id+"\")'>Edit</button>"+
+        "<button class='icon-btn' onclick='delReview(\""+r.id+"\")'>✕</button></div></div>";
+    });
+    h+="</div>";
+  }
+  return h;
+}
+
+/* ---------------- Settings view ---------------- */
+function viewSettings(){
+  return "<div class='section-title'><h2>Settings</h2></div>"+
+  "<div class='card'><h2>Preferences</h2>"+
+    "<div class='field'><label>USD → AUD conversion rate (for totals)</label>"+
+    "<input type='number' step='0.01' id='fxRate' value='"+S.settings.audPerUsd+"' style='max-width:200px'></div>"+
+    "<div class='field'><label>Weekly bid budget (AUD, 0 = none)</label>"+
+    "<input type='number' step='1' id='bidBudget' value='"+(S.settings.weeklyBidBudget||0)+"' style='max-width:200px'>"+
+    "<div class='note'>The manual's rule: never spend on bids until you set this budget.</div></div>"+
+    "<div class='btn-row'><button class='btn small' onclick='savePrefs()'>Save preferences</button></div></div>"+
+  "<div class='card'><h2>Data</h2>"+
+    "<div class='btn-row'>"+
+    "<button class='btn small secondary' onclick='exportJSON()'>Export JSON</button>"+
+    "<label class='btn small secondary' style='cursor:pointer'>Import JSON"+
+    "<input type='file' id='importFile' accept='.json' style='display:none' onchange='importJSON(this.files[0])'></label>"+
+    "</div>"+
+    "<div class='note'>Your data lives only in this browser (localStorage). Export regularly as a backup — "+
+    "it is also your clean record for tax time.</div></div>"+
+  "<div class='card'><h2>Preview</h2>"+
+    "<div class='btn-row'>"+
+    (S.settings.demoLoaded
+      ? "<button class='btn small secondary' onclick='clearAll()'>Remove demo data</button>"
+      : "<button class='btn small secondary' onclick='loadDemo()'>Load demo data</button>")+
+    "<button class='btn small danger' onclick='clearAll()'>Delete ALL data</button>"+
+    "</div>"+
+    "<div class='note'>Demo data is clearly labeled fake and is off by default. "+
+    "This app never invents clients, revenue or reviews.</div></div>"+
+  "<div class='card'><h2>About</h2>"+
+    "<div class='note'>Ilse Placencia — Freelance Operations. AI automation: n8n, Make, "+
+    "AI chatbots, API integrations, webhooks, workflow automation.<br>"+
+    "Platforms: Fiverr · Upwork · Freelancer.com · Airtasker · Twine (coming soon) · Unjumble (coming soon).<br>"+
+    "Works fully offline. Version 1.</div></div>";
+}
+function savePrefs(){
+  const fx=parseFloat(document.getElementById("fxRate").value);
+  const bb=parseFloat(document.getElementById("bidBudget").value);
+  if(fx>0) S.settings.audPerUsd=fx;
+  S.settings.weeklyBidBudget=Math.max(0,bb||0);
+  save(); render(); toast("Preferences saved");
+}
+function clearAll(){
+  if(confirm("Delete ALL data in this app? Export a backup first if you need it.")){
+    S=blankState(); save(); render(); toast("All data deleted");
+  }
+}
+
+/* ---------------- render & init ---------------- */
+function render(){
+  nav(); updatePill();
+  const v=document.getElementById("view");
+  const views={dash:viewDash,money:viewMoney,pipeline:viewPipeline,
+    deadlines:viewDeadlines,clients:viewClients,bids:viewBids,
+    rep:viewRep,settings:viewSettings};
+  v.innerHTML=(views[currentTab]||viewDash)();
+  window.scrollTo(0,0);
+}
+document.addEventListener("DOMContentLoaded", render);
+render();
+
+/* Clearly fake, clearly labeled demo data. Off by default. */
+function loadDemo(){
+  const d = blankState();
+  d.settings.demoLoaded = true;
+  const c1 = uid(), c2 = uid(), p1 = uid(), p2 = uid(), p3 = uid();
+  d.clients = [
+    {id:c1, name:"Demo Client — Bakery (fake)", platform:"Airtasker", notes:"Demo entry only. Delete any time."},
+    {id:c2, name:"Demo Client — Gym (fake)", platform:"Upwork", notes:"Demo entry only. Delete any time."}
+  ];
+  d.projects = [
+    {id:p1, name:"DEMO — Order follow-up bot (fake)", clientId:c1, platform:"Airtasker",
+     stage:"in progress", value:450, currency:"AUD", hoursWorked:6, notes:""},
+    {id:p2, name:"DEMO — Lead capture chatbot (fake)", clientId:c2, platform:"Upwork",
+     stage:"mockup approved", value:300, currency:"USD", hoursWorked:4, notes:""},
+    {id:p3, name:"DEMO — Prospect: invoicing automation (fake)", clientId:"", platform:"Freelancer.com",
+     stage:"lead", value:600, currency:"USD", hoursWorked:0, notes:""}
+  ];
+  d.payments = [
+    {id:uid(), projectId:p1, label:"DEMO — Milestone 1 (fake)", amount:225, currency:"AUD",
+     status:"paid", date:todayISO()},
+    {id:uid(), projectId:p1, label:"DEMO — Milestone 2 (fake)", amount:225, currency:"AUD",
+     status:"pending", date:todayISO()}
+  ];
+  d.costs = [
+    {id:uid(), name:"DEMO — Upwork Connects (fake)", category:"Connects",
+     amount:15, currency:"USD", date:todayISO(), recurring:false},
+    {id:uid(), name:"DEMO — n8n hosting (fake)", category:"Tools",
+     amount:29, currency:"AUD", date:todayISO(), recurring:true}
+  ];
+  const t = new Date(); t.setDate(t.getDate()+3);
+  const dd = t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");
+  d.deadlines = [
+    {id:uid(), title:"DEMO — Deliver bot v1 (fake)", projectId:p1, dueDate:dd, done:false, alertDays:3}
+  ];
+  d.comms = [
+    {id:uid(), clientId:c1, date:todayISO(), dir:"in", platform:"Airtasker",
+     summary:"DEMO message (fake): can you add a reminder step?", responseMins:null},
+    {id:uid(), clientId:c1, date:todayISO(), dir:"out", platform:"Airtasker",
+     summary:"DEMO reply (fake): yes, included in milestone 2.", responseMins:35}
+  ];
+  d.bids = [
+    {id:uid(), clientId:c2, platform:"Upwork", date:todayISO(),
+     title:"DEMO bid — chatbot build (fake)", bidAmount:300, currency:"USD",
+     connectsUsed:16, connectsCost:12, status:"won", notes:""}
+  ];
+  d.reviews = [
+    {id:uid(), clientId:c2, platform:"Upwork", date:todayISO(), rating:5,
+     text:"DEMO review (fake): great work, fast delivery."}
+  ];
+  S = d; save(); render();
+  toast("Demo data loaded — all entries are marked fake");
+}
+</script>
+</body>
+</html>
