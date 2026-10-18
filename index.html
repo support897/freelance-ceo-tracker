@@ -171,6 +171,8 @@ const PAY_STATUS = ["pending","paid"];
 function blankState(){
   return { projects:[], payments:[], costs:[], deadlines:[],
            clients:[], comms:[], bids:[], reviews:[],
+           inboxUnread:{fiverr:0,upwork:0,freelancer:0,airtasker:0},
+           importedRefs:[],
            settings:{ audPerUsd:1.50, weeklyBidBudget:0, demoLoaded:false } };
 }
 function load(){
@@ -366,7 +368,8 @@ const fmtResp = mins => mins==null ? "—" :
 const TABS = [
   ["dash","Dashboard"],["money","Money"],["pipeline","Pipeline"],
   ["deadlines","Deadlines"],["clients","Clients"],["bids","Bids"],
-  ["rep","Reputation"],["settings","Settings"]
+  ["rep","Reputation"],["platforms","Platforms"],["import","Import"],
+  ["settings","Settings"]
 ];
 let currentTab = "dash";
 function nav(){
@@ -980,13 +983,197 @@ function clearAll(){
   }
 }
 
+/* ---------------- Platforms view (multi-platform tracking) ----------------
+   One card per live platform. Reads only from existing modules; adds nothing
+   to them. Unread counts come from loop imports (S.inboxUnread). */
+const LOOP_PLATFORMS = {"fiverr":"Fiverr","upwork":"Upwork",
+  "freelancer":"Freelancer.com","airtasker":"Airtasker"};
+const LOOP_TYPES = ["bid","message","order","earning","review"];
+function loopKeyOf(label){
+  return label==="Fiverr"?"fiverr":label==="Upwork"?"upwork":
+    label==="Freelancer.com"?"freelancer":label==="Airtasker"?"airtasker":null;
+}
+function stageProgress(p){
+  const i = STAGES.indexOf(p.stage);
+  return i<0 ? 0 : Math.round(i/(STAGES.length-1)*100);
+}
+function platformStats(key){
+  const label = LOOP_PLATFORMS[key];
+  const bids = S.bids.filter(b=>b.platform===label);
+  const projs = S.projects.filter(p=>p.platform===label);
+  const active = projs.filter(p=>!["paid","reviewed"].includes(p.stage));
+  const paid = projs.filter(p=>["paid","reviewed"].includes(p.stage));
+  let earned = 0;
+  S.payments.forEach(pay=>{
+    if(pay.status!=="paid") return;
+    const pr = S.projects.find(x=>x.id===pay.projectId);
+    if(pr && pr.platform===label) earned += toAUD(pay.amount||0, pay.currency||"AUD");
+  });
+  const revs = S.reviews.filter(r=>r.platform===label);
+  const avg = revs.length ? revs.reduce((a,r)=>a+r.rating,0)/revs.length : null;
+  const unread = (S.inboxUnread && S.inboxUnread[key]) || 0;
+  const openBids = bids.filter(b=>b.status==="sent").length;
+  return {label:label, active:active, paidCount:paid.length, earned:earned,
+    revsCount:revs.length, avg:avg, unread:unread, openBids:openBids,
+    bidsTotal:bids.length};
+}
+function viewPlatforms(){
+  let h = "<div class='section-title'><h2>Platforms</h2>"+
+    "<button class='btn small' onclick='currentTab=\"import\";render()'>Import loop events</button></div>";
+  h += "<div class='note' style='margin-bottom:10px'>One card per live platform. "+
+    "Bids, projects, earnings and reviews come from the modules you already use; "+
+    "unread messages come from loop imports.</div>";
+  Object.keys(LOOP_PLATFORMS).forEach(key=>{
+    const s = platformStats(key);
+    const projs = S.projects.filter(p=>p.platform===s.label)
+      .filter(p=>!["paid","reviewed"].includes(p.stage));
+    h += "<div class='card'><div class='section-title' style='margin:0 0 8px'><h2>"+
+      esc(s.label)+"</h2>"+
+      (s.unread>0 ? "<button class='btn small secondary' onclick='markRead(\""+key+"\")'>"+
+        "Mark "+s.unread+" read</button>" : "")+"</div>";
+    h += "<div class='kpis'>"+
+      kpi("Open bids", s.openBids, s.bidsTotal+" bids total")+
+      kpi("Active projects", projs.length, s.paidCount+" paid")+
+      kpi("Earned", money(s.earned), "paid, AUD")+
+      kpi("Rating", s.avg!=null ? s.avg.toFixed(1)+" ★" : "—", s.revsCount+" reviews")+
+      kpi("Unread", s.unread, "messages")+
+      "</div>";
+    if(projs.length){
+      h += "<h3 style='margin:8px 0 6px'>Active projects</h3>"+
+        "<div class='table-wrap'><table><tr><th>Project</th><th>Progress</th><th>Price</th></tr>";
+      projs.forEach(p=>{
+        const pct = stageProgress(p);
+        h += "<tr><td>"+esc(p.name)+"<br><span class='note'>"+esc(p.stage)+"</span></td>"+
+          "<td style='min-width:120px'><div class='progress'><div style='width:"+pct+"%'></div></div>"+
+          "<span class='note'>"+pct+"%</span></td>"+
+          "<td>"+((p.value!=null && p.value!=="") ? esc(p.currency||"AUD")+" "+p.value : "—")+"</td></tr>";
+      });
+      h += "</table></div>";
+    } else {
+      h += "<div class='empty'>No active projects on "+esc(s.label)+".</div>";
+    }
+    h += "</div>";
+  });
+  return h;
+}
+function markRead(key){
+  if(!S.inboxUnread) S.inboxUnread = {};
+  S.inboxUnread[key] = 0; save(); render(); toast("Marked read");
+}
+
+/* ---------------- Import view (loop events JSONL) ----------------
+   Paste JSONL or choose a .jsonl file. Validates each line, dedupes on
+   ts+ref+type, and merges additively: bids -> Bids, orders -> projects,
+   earnings -> payments (Money), messages -> unread counter, reviews noted
+   but never stored (schema has no rating — never invent one). */
+function viewImport(){
+  const sample1 = '{"ts":"2026-10-18T09:12:00+10:00","platform":"upwork","type":"bid","ref":"bid-8821","summary":"n8n order-sync automation","amount":400,"currency":"USD"}';
+  const sample2 = '{"ts":"2026-10-18T09:40:00+10:00","platform":"fiverr","type":"earning","ref":"ord-551","summary":"Chatbot milestone 2","amount":225,"currency":"AUD"}';
+  let h = "<div class='section-title'><h2>Import loop events</h2></div>";
+  h += "<div class='hint'><b>Format:</b> one JSON object per line — "+
+    "{ts, platform, type, ref, summary, amount, currency}<br>"+
+    "platform: fiverr | upwork | freelancer | airtasker · "+
+    "type: bid | message | order | earning | review<br><br>"+
+    "<b>Samples:</b><pre style='white-space:pre-wrap;font-size:.72rem;margin:6px 0 0'>"+
+    esc(sample1)+"\n"+esc(sample2)+"</pre>"+
+    "<div class='note' style='margin-top:8px'>Same row twice is never double-counted: "+
+    "rows are deduped on ts + ref + type. Nothing is overwritten.</div></div>";
+  h += "<div class='card'><div class='field'><label>Paste JSONL</label>"+
+    "<textarea id='jsonlBox' style='min-height:140px' "+
+    "placeholder='One JSON object per line…'></textarea></div>"+
+    "<div class='btn-row'><button class='btn small' onclick='importJSONL()'>Import pasted rows</button>"+
+    "<label class='btn small secondary' style='cursor:pointer'>Choose .jsonl file"+
+    "<input type='file' id='jsonlFile' accept='.jsonl,.txt' style='display:none' "+
+    "onchange='importJSONLFile(this.files[0])'></label></div>"+
+    "<div id='importResult'></div></div>";
+  return h;
+}
+function parseLoopLine(line){
+  const o = JSON.parse(line);
+  if(!o || typeof o!=="object") throw new Error("not an object");
+  if(!o.ts || typeof o.ts!=="string") throw new Error("missing ts");
+  if(!LOOP_PLATFORMS[o.platform]) throw new Error("bad platform: "+o.platform);
+  if(LOOP_TYPES.indexOf(o.type)<0) throw new Error("bad type: "+o.type);
+  if(!o.ref) throw new Error("missing ref");
+  if(!o.summary || typeof o.summary!=="string") throw new Error("missing summary");
+  const amount = o.amount==null ? null : Number(o.amount);
+  if(amount!=null && !isFinite(amount)) throw new Error("bad amount");
+  const currency = o.currency || "USD";
+  if(currency!=="USD" && currency!=="AUD") throw new Error("bad currency");
+  return {ts:o.ts, platform:o.platform, type:o.type, ref:String(o.ref),
+    summary:o.summary, amount:amount, currency:currency};
+}
+function importLoopEvents(text){
+  const lines = text.split(/\r?\n/);
+  let imp=0, skip=0, madeBids=0, madeProjects=0, madePayments=0, unread=0, noted=0;
+  const errors = [];
+  lines.forEach((raw, idx)=>{
+    const line = raw.trim(); if(!line) return;
+    let ev;
+    try{ ev = parseLoopLine(line); }
+    catch(e){ skip++; if(errors.length<3) errors.push("line "+(idx+1)+": "+e.message); return; }
+    const dk = ev.type+"|"+ev.ts+"|"+ev.ref;
+    if(S.importedRefs.indexOf(dk)>=0){ skip++; return; }
+    S.importedRefs.push(dk);
+    const label = LOOP_PLATFORMS[ev.platform];
+    const day = (ev.ts||"").slice(0,10) || todayISO();
+    const via = "Imported loop event · ref "+ev.ref+" · "+ev.ts;
+    if(ev.type==="bid"){
+      S.bids.push({id:uid(), title:ev.summary, clientId:"", platform:label, date:day,
+        bidAmount:ev.amount, currency:ev.currency, connectsUsed:null, connectsCost:null,
+        status:"sent", notes:via});
+      madeBids++;
+    }else if(ev.type==="order"){
+      S.projects.push({id:uid(), name:ev.summary, clientId:"", platform:label, stage:"won",
+        value:ev.amount, currency:ev.currency, hoursWorked:0, notes:via});
+      madeProjects++;
+    }else if(ev.type==="earning"){
+      S.payments.push({id:uid(), projectId:"", label:ev.summary, amount:ev.amount,
+        currency:ev.currency, status:"paid", date:day});
+      madePayments++;
+    }else if(ev.type==="message"){
+      if(!S.inboxUnread) S.inboxUnread = {};
+      S.inboxUnread[ev.platform] = (S.inboxUnread[ev.platform]||0)+1; unread++;
+    }else if(ev.type==="review"){
+      noted++; // schema has no rating — never invent one
+    }
+    imp++;
+  });
+  save();
+  return {imp:imp, skip:skip, madeBids:madeBids, madeProjects:madeProjects,
+    madePayments:madePayments, unread:unread, noted:noted, errors:errors};
+}
+function showImportResult(r){
+  const el = document.getElementById("importResult");
+  let h = "<div class='card' style='margin-top:12px'><b>Imported "+r.imp+
+    "</b>, skipped "+r.skip+".<br>"+
+    "<span class='note'>Created: "+r.madeBids+" bids · "+r.madeProjects+" projects · "+
+    r.madePayments+" payments · +"+r.unread+" unread messages · "+
+    r.noted+" reviews noted (no rating in data — not stored).</span>";
+  if(r.errors.length)
+    h += "<div class='note' style='color:var(--bad)'>"+r.errors.map(esc).join("<br>")+"</div>";
+  h += "</div>";
+  el.innerHTML = h;
+  toast("Import done: "+r.imp+" imported, "+r.skip+" skipped");
+}
+function importJSONL(){
+  showImportResult(importLoopEvents(document.getElementById("jsonlBox").value));
+}
+function importJSONLFile(file){
+  if(!file) return;
+  const fr = new FileReader();
+  fr.onload = ()=>{ showImportResult(importLoopEvents(String(fr.result))); };
+  fr.readAsText(file);
+}
+
 /* ---------------- render & init ---------------- */
 function render(){
   nav(); updatePill();
   const v=document.getElementById("view");
   const views={dash:viewDash,money:viewMoney,pipeline:viewPipeline,
     deadlines:viewDeadlines,clients:viewClients,bids:viewBids,
-    rep:viewRep,settings:viewSettings};
+    rep:viewRep,platforms:viewPlatforms,import:viewImport,
+    settings:viewSettings};
   v.innerHTML=(views[currentTab]||viewDash)();
   window.scrollTo(0,0);
 }
